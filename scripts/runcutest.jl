@@ -20,7 +20,8 @@ function runcutest()
     :trunk => trunk_wrapper,
     :gradienteCon => gradienteCon,
     :STCG => STCG,
-    :bfgs => bfgs
+    :bfgs => bfgs,
+    :newtonar => newtonar
   )
 
   stats = bmark_solvers(solvers, problems)
