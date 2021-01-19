@@ -18,7 +18,9 @@ function runcutest()
   solvers = Dict(
     :lbfgs => lbfgs,
     :trunk => trunk_wrapper,
-    :yoursolver => yoursolver_wrapper
+    :gradienteCon => gradienteCon,
+    :STCG => STCG,
+    :bfgs => bfgs
   )
 
   stats = bmark_solvers(solvers, problems)
