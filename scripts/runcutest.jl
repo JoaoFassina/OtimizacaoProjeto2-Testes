@@ -7,23 +7,29 @@ using Plots
 using SolverBenchmark
 
 function runcutest()
-  pnames = CUTEst.select(max_var=2, max_con=0, only_free_var=true)
+  pnames = CUTEst.select(max_var=1000, max_con=0, only_free_var=true)
   sort!(pnames)
   problems = (CUTEstModel(p) for p in pnames) # Generator of problems
 
   # If you need to define different arguments, you can wrap
-  trunk_wrapper(nlp; kwargs...) = trunk(nlp, max_time=3.0; kwargs...)
-  yoursolver_wrapper(nlp; kwargs...) = uncsolver(nlp, max_iter=1; kwargs...)
+  trunk_wrapper(nlp; kwargs...) = trunk(nlp, max_time=30.0; kwargs...)
+  newtonar_wra(nlp; kwargs...) = newtonar(nlp, max_time=30.0; kwargs...)
+  STCG_wra(nlp; kwargs...) = STCG(nlp, max_time=30.0; kwargs...)
+  gradienteCon_wra(nlp; kwargs...) = gradienteCon(nlp, max_time=30.0; kwargs...)
+  bfgs_wra(nlp; kwargs...) = bfgs(nlp, max_time=30.0; kwargs...)
+  lbfgs_wrapper(nlp; kwargs...) = lbfgs(nlp,max_time = 30.0)
+  newtonmodar_wra(nlp; kwargs...) = newtonmodar(nlp,max_time = 30.0)
 
   solvers = Dict(
-    :lbfgs => lbfgs,
-    :trunk => trunk_wrapper,
-    :gradienteCon => gradienteCon,
-    :STCG => STCG,
-    :bfgs => bfgs,
-    :newtonar => newtonar
-  )
 
+    :lbfgs => lbfgs_wrapper,
+    :trunk => trunk_wrapper,
+    :gradienteCon => gradienteCon_wra,
+    :STCG => STCG_wra,
+    :bfgs => bfgs_wra,
+    :newtonar => newtonar_wra,
+    :newtonmodar => newtonmodar_wra
+  )
   stats = bmark_solvers(solvers, problems)
 end
 
